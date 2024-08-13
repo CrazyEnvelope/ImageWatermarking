@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import filedialog as fd
 from PIL import Image, ImageTk
 
+watermark = ""
+
 def open_file():
     filetypes = (('JPG', '*.jpg'),
                  ('PNG', '*.png'),
@@ -17,7 +19,8 @@ def open_image():
 
     global picture
     picture = ImageTk.PhotoImage(img)
-    canvasPicture.create_image(200,200,image = picture)
+    canvasPicture.create_image(picture.width()/2,picture.height()/2,image = picture)
+    canvasPicture.config(scrollregion=(0,0,picture.width(),picture.height()))
     canvasPicture.itemconfig(pictureText, text = "")
 
 def open_watermark():
@@ -28,8 +31,15 @@ def open_watermark():
 
     global watermark
     watermark = ImageTk.PhotoImage(img)
-    canvasWatermark.create_image(200, 200, image=watermark)
+    canvasWatermark.create_image(watermark.width()/2,watermark.height()/2, image=watermark)
+    canvasWatermark.config(scrollregion=(0,0,watermark.width(),watermark.height()))
     canvasWatermark.itemconfig(watermarkText, text="")
+
+def placeWatermark(event):
+    x = event.x
+    y = event.y
+    canvasPicture.delete("watermark")
+    canvasPicture.create_image(x,y,image=watermark,tag = "watermark")
 
 window = tk.Tk()
 window.minsize(width = 500, height = 500)
@@ -65,6 +75,11 @@ yscrollPicture = tk.Scrollbar(canvas_framePicture, orient="vertical", command=ca
 yscrollPicture.grid(row=0, column=1, sticky='ns')
 canvasPicture.config(yscrollcommand=yscrollPicture.set)
 
+pictureLabel = tk.Label(text = "Original Image")
+pictureLabel.grid(row = 5, column = 0)
+
+canvasPicture.bind("<Button-1>", placeWatermark)
+
 #################### CANVASFORTHEWATERMARK ####################
 canvas_frameWatermark = tk.Frame(window)
 canvas_frameWatermark.grid(row=4, column=2)
@@ -80,6 +95,10 @@ canvasWatermark.config(xscrollcommand=xscrolWatermark.set)
 yscrollWatermark = tk.Scrollbar(canvas_frameWatermark, orient="vertical", command=canvasWatermark.yview)
 yscrollWatermark.grid(row=0, column=1, sticky='ns')
 canvasWatermark.config(yscrollcommand=yscrollWatermark.set)
+
+watermarkLabel = tk.Label(text = "Watermark Image")
+watermarkLabel.grid(row = 5, column = 2)
+
 
 # placeWatermark = tk.Button(text = "Place watermark!")
 # placeWatermark.grid(row = 6, column = 1)
