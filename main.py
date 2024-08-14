@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog as fd
 from PIL import Image, ImageTk
+from io import BytesIO
 
 watermark = ""
 
@@ -31,7 +32,7 @@ def open_watermark():
 
     global watermark
     watermark = ImageTk.PhotoImage(img)
-    canvasWatermark.create_image(watermark.width()/2,watermark.height()/2, image=watermark)
+    canvasWatermark.create_image(watermark.width()/2,watermark.height()/2, image=watermark, tag="watermarkInCanvas")
     canvasWatermark.config(scrollregion=(0,0,watermark.width(),watermark.height()))
     canvasWatermark.itemconfig(watermarkText, text="")
 
@@ -40,6 +41,7 @@ def placeWatermark(event):
     y = event.y
     canvasPicture.delete("watermark")
     canvasPicture.create_image(x,y,image=watermark,tag = "watermark")
+
 
 window = tk.Tk()
 window.minsize(width = 500, height = 500)
@@ -100,7 +102,7 @@ watermarkLabel = tk.Label(text = "Watermark Image")
 watermarkLabel.grid(row = 5, column = 2)
 
 
-# placeWatermark = tk.Button(text = "Place watermark!")
-# placeWatermark.grid(row = 6, column = 1)
+placeWatermark = tk.Button(text = "Save image!")
+placeWatermark.grid(row = 6, column = 1)
 
 window.mainloop()
